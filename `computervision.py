@@ -1,8 +1,3 @@
-Iss app ko ek production-grade, multi-page application banane ke liye st.sidebar.radio navigation ke through alag-alag modules (Sections) mein divide kar diya gaya hai. Isme Roboflow se better features jaise **Autonomous Dataset Health Audit**, **AutoML Model Selection Engine**, **Interactive Real-World Robustness Inspector**, aur **One-Click Edge Deployment & Drift Monitoring** include hain.
-
-### Updated Multi-Section Streamlit Code (`app.py`)
-
-```python
 import streamlit as st
 import streamlit.components.v1 as components
 import pandas as pd
@@ -12,13 +7,13 @@ import numpy as np
 # 1. PAGE CONFIGURATION & DARK THEME SETUP
 # ---------------------------------------------------------
 st.set_page_config(
-    page_title="VisionForge 3D AI Engine",
+    page_title="VisionForge 3D AI Platform",
     page_icon="✦",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom Glassmorphic & 3D CSS
+# Custom Glassmorphic CSS Styling
 st.markdown("""
 <style>
     .stApp {
@@ -34,11 +29,10 @@ st.markdown("""
         border-radius: 16px;
         padding: 20px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        transition: all 0.4s ease;
+        transition: all 0.3s ease;
         margin-bottom: 15px;
     }
     .stCard3D:hover {
-        transform: translateY(-5px);
         border-color: rgba(100, 119, 255, 0.8);
         box-shadow: 0 15px 35px rgba(52, 72, 216, 0.3);
     }
@@ -69,26 +63,24 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# ---------------------------------------------------------
-# 2. EMBEDDED THREE.JS REAL-TIME 3D HEADER
-# ---------------------------------------------------------
-three_js_background = """
+# Three.js 3D Background Component
+THREE_JS_HTML = """
 <!DOCTYPE html>
 <html>
 <head>
     <style>
         body { margin: 0; overflow: hidden; background: transparent; }
-        canvas { display: block; width: 100vw; height: 140px; }
+        canvas { display: block; width: 100vw; height: 130px; }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
     <script>
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 140, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / 130, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
         
-        renderer.setSize(window.innerWidth, 140);
+        renderer.setSize(window.innerWidth, 130);
         document.body.appendChild(renderer.domElement);
 
         const geometry = new THREE.IcosahedronGeometry(2, 1);
@@ -101,7 +93,7 @@ three_js_background = """
         scene.add(sphere);
 
         const particlesGeo = new THREE.BufferGeometry();
-        const count = 250;
+        const count = 200;
         const positions = new Float32Array(count * 3);
         for(let i=0; i<count*3; i++) {
             positions[i] = (Math.random() - 0.5) * 12;
@@ -126,56 +118,26 @@ three_js_background = """
             renderer.render(scene, camera);
         }
         animate();
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / 140;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, 140);
-        });
     </script>
 </body>
 </html>
 """
 
 # ---------------------------------------------------------
-# 3. NAVIGATION SIDEBAR
+# 2. MODULE FUNCTIONS (Clean Separation)
 # ---------------------------------------------------------
-with st.sidebar:
-    st.markdown("### ✦ <span style='color:#6477ff;font-weight:800;font-size:22px;'>VisionForge AI</span>", unsafe_allow_html=True)
-    st.markdown("---")
-    
-    page = st.radio(
-        "Navigation",
-        [
-            "⌂ Home Dashboard",
-            "▤ Dataset Health Audit",
-            "▣ AutoML Training",
-            "🧪 Real-World Inspector",
-            "◉ Deployment & Drift"
-        ],
-        label_visibility="collapsed"
-    )
-    
-    st.markdown("---")
-    st.caption("Active Project")
-    st.markdown("**Bottle Defect Detection**")
-    st.progress(68)
-    st.caption("Training Phase: Epoch 12/50")
 
-# ---------------------------------------------------------
-# 4. SECTION 1: HOME DASHBOARD
-# ---------------------------------------------------------
-if page == "⌂ Home Dashboard":
+def render_dashboard():
     top_l, top_r = st.columns([3, 1])
     with top_l:
         st.markdown("# Welcome back, M Hassaan 👋")
-        st.caption("Autonomous Computer Vision Engine — Beyond Roboflow Workflows")
+        st.caption("Autonomous Computer Vision Engine — Multi-Module Control Center")
     with top_r:
         st.write("")
-        if st.button("+ New Vision Project", use_container_width=True):
+        if st.button("+ New Vision Project", key="btn_new_proj", use_container_width=True):
             st.toast("Opening Project Wizard...", icon="✦")
 
-    components.html(three_js_background, height=150)
+    components.html(THREE_JS_HTML, height=140)
 
     q1, q2, q3, q4 = st.columns(4)
     q1.metric("Images Processed", "4,850", "+12% this week")
@@ -184,7 +146,6 @@ if page == "⌂ Home Dashboard":
     q4.metric("Active Endpoint", "99.9%", "Edge Engine")
 
     st.markdown("<br>", unsafe_allow_html=True)
-
     main_col, ai_col = st.columns([3, 1])
 
     with main_col:
@@ -202,7 +163,6 @@ if page == "⌂ Home Dashboard":
         p4.warning("4. Stress Testing")
 
         st.markdown("<br>", unsafe_allow_html=True)
-
         c_a, c_b = st.columns(2)
         with c_a:
             st.markdown("""
@@ -228,19 +188,16 @@ if page == "⌂ Home Dashboard":
         <div class="stCard3D">
             <h3 style="color:#6477ff;">✦ AI Copilot</h3>
             <p style="font-size:13px;color:#dbe4f8;background:rgba(18,32,57,0.8);padding:12px;border-radius:10px;">
-                I monitored your dataset and detected severe class imbalance. Should I apply synthetic diffusion sampling to fix it?
+                Detected class imbalance. Should I apply synthetic diffusion sampling to fix it?
             </p>
         </div>
         """, unsafe_allow_html=True)
-        if st.button("Fix Data Imbalance", use_container_width=True):
+        if st.button("Fix Data Imbalance", key="btn_fix_bal", use_container_width=True):
             st.toast("Generating synthetic missing cap images...")
-        if st.button("Deduplicate Dataset", use_container_width=True):
+        if st.button("Deduplicate Dataset", key="btn_dedup", use_container_width=True):
             st.toast("Removed 12 duplicate frames.")
 
-# ---------------------------------------------------------
-# 5. SECTION 2: DATASET HEALTH AUDIT (Roboflow Weakness Target)
-# ---------------------------------------------------------
-elif page == "▤ Dataset Health Audit":
+def render_dataset_audit():
     st.markdown("# ▤ Autonomous Dataset Health Audit")
     st.caption("Automatically find imbalance, data leakage, duplicate images, and low-quality annotations.")
 
@@ -250,7 +207,7 @@ elif page == "▤ Dataset Health Audit":
         <div class="stCard3D">
             <h4>Imbalance Analyzer</h4>
             <p style="font-size:24px;color:#ff5c6c;font-weight:700;">Severe Imbalance</p>
-            <p style="font-size:12px;color:#8390a7;">Target Ratio Required: 1:1:1<br>Current Ratio: 4.7 : 1.4 : 1.0</p>
+            <p style="font-size:12px;color:#8390a7;">Required Ratio: 1:1:1<br>Current Ratio: 4.7 : 1.4 : 1.0</p>
         </div>
         """, unsafe_allow_html=True)
     with d2:
@@ -266,30 +223,31 @@ elif page == "▤ Dataset Health Audit":
         <div class="stCard3D">
             <h4>Data Leakage Guard</h4>
             <p style="font-size:24px;color:#20d69a;font-weight:700;">12 Duplicates</p>
-            <p style="font-size:12px;color:#8390a7;">Found near-identical frames between Train & Test sets.</p>
+            <p style="font-size:12px;color:#8390a7;">Found duplicate frames in Train & Validation sets.</p>
         </div>
         """, unsafe_allow_html=True)
 
     st.markdown("### Targeted Auto-Fixes")
     c1, c2 = st.columns(2)
     with c1:
-        st.checkbox("Apply Targeted Class Augmentation (Generate 1,500 'Missing Cap' frames)")
-        st.checkbox("Filter Blurry Frames (Blur score < 100 Laplacian variance)")
+        st.checkbox("Apply Class Augmentation (+1,500 'Missing Cap' frames)", key="chk1")
+        st.checkbox("Filter Blurry Frames (Variance threshold < 100)", key="chk2")
     with c2:
-        st.checkbox("Remove Duplicate Hashes from Validation Split")
-        st.checkbox("Auto-Fix Bounding Box Out-of-Bounds Artifacts")
+        st.checkbox("Remove Duplicate Hashes from Validation Split", key="chk3")
+        st.checkbox("Auto-Fix Out-of-Bounds Bounding Boxes", key="chk4")
 
-    if st.button("✦ Execute Dataset Health Optimization"):
+    if st.button("✦ Execute Dataset Health Optimization", key="btn_run_audit"):
         st.success("Dataset health score improved from 84% to 98%!")
 
-# ---------------------------------------------------------
-# 6. SECTION 3: AUTOML MODEL SELECTION
-# ---------------------------------------------------------
-elif page == "▣ AutoML Training":
+def render_automl():
     st.markdown("# ▣ Autonomous Model Architect Engine")
-    st.caption("Tell the agent your deployment target; it automatically selects and trains the optimal vision model.")
+    st.caption("Select your target deployment hardware to auto-select and train optimal vision architectures.")
 
-    target = st.selectbox("Select Target Deployment Scenario", ["Factory Edge (Jetson Nano / Raspberry Pi)", "Cloud Server API (High Accuracy)", "Mobile Web (Real-time Latency)"])
+    target = st.selectbox(
+        "Select Target Deployment Scenario",
+        ["Factory Edge (Jetson Nano / Raspberry Pi)", "Cloud Server API (High Accuracy)", "Mobile Web (Real-time Latency)"],
+        key="sb_target"
+    )
     
     st.markdown("<br>", unsafe_allow_html=True)
     col1, col2 = st.columns(2)
@@ -313,47 +271,39 @@ elif page == "▣ AutoML Training":
         df_models = pd.DataFrame({
             "Architecture": ["YOLOv8s (Selected)", "YOLOv8n", "YOLOv5s", "RT-DETR-ResNet"],
             "mAP@0.5": [0.872, 0.843, 0.821, 0.798],
-            "FPS (Jetson Orin)": [142, 210, 165, 85],
+            "FPS (Jetson)": [142, 210, 165, 85],
             "Params (M)": [11.2, 3.2, 7.2, 32.0]
         })
         st.dataframe(df_models, hide_index=True, use_container_width=True)
 
-# ---------------------------------------------------------
-# 7. SECTION 4: REAL-WORLD ROBUSTNESS INSPECTOR (Targeting Guarantee Issue)
-# ---------------------------------------------------------
-elif page == "🧪 Real-World Inspector":
+def render_inspector():
     st.markdown("# 🧪 Real-World Reliability Inspector")
-    st.caption("Test how your model performs under difficult environmental conditions before real deployment.")
+    st.caption("Stress-test vision models against edge environment conditions before deployment.")
 
     st.subheader("Simulate Factory Environmental Conditions")
     col1, col2 = st.columns(2)
     
     with col1:
-        lighting = st.slider("Lighting Brightness Reduction (%)", 0, 80, 20)
-        blur_val = st.slider("Camera Motion Blur Simulation", 0, 10, 2)
+        lighting = st.slider("Lighting Brightness Reduction (%)", 0, 80, 20, key="sld_light")
+        blur_val = st.slider("Camera Motion Blur Simulation", 0, 10, 2, key="sld_blur")
     with col2:
-        occlusion = st.slider("Object Occlusion (%)", 0, 50, 10)
-        noise = st.slider("Sensor Noise (ISO Grain)", 0, 100, 15)
+        occlusion = st.slider("Object Occlusion (%)", 0, 50, 10, key="sld_occ")
+        noise = st.slider("Sensor Noise (ISO Grain)", 0, 100, 15, key="sld_noise")
 
     st.markdown("<br>", unsafe_allow_html=True)
-    
-    # Dynamic Expected Accuracy Calculation
     reliability_score = max(30, 95 - (lighting*0.3 + blur_val*3 + occlusion*0.8 + noise*0.2))
     
     st.markdown(f"""
     <div class="stCard3D">
         <h3>Estimated Real-World Reliability Confidence</h3>
         <h1 style="color:{'#20d69a' if reliability_score > 75 else '#ff5c6c'};">{reliability_score:.1f}% Expected Accuracy</h1>
-        <p style="color:#8390a7;">Diagnostic: Model is susceptible to high occlusion and low lighting conditions. Collect 200 side-view dark samples to patch this gap.</p>
+        <p style="color:#8390a7;">Diagnostic: Model is sensitive to high occlusion and dark conditions. Collect side-view dark samples to patch this gap.</p>
     </div>
     """, unsafe_allow_html=True)
 
-# ---------------------------------------------------------
-# 8. SECTION 5: DEPLOYMENT & DRIFT MONITORING
-# ---------------------------------------------------------
-elif page == "◉ Deployment & Drift":
+def render_deployment():
     st.markdown("# ◉ Edge Deployment & Drift Monitoring")
-    st.caption("Continuous model monitoring, automatic concept drift detection, and retraining triggers.")
+    st.caption("Continuous endpoint telemetry, concept drift detection, and auto-retraining triggers.")
 
     m1, m2, m3 = st.columns(3)
     m1.metric("Endpoint Status", "Active (Edge)", "Latency: 12ms")
@@ -361,7 +311,7 @@ elif page == "◉ Deployment & Drift":
     m3.metric("Auto-Retrain Status", "Standby", "Triggers at Drift > 0.30")
 
     st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown("### Production Inference Stream Data")
+    st.markdown("### Production Inference Telemetry Stream")
     
     chart_data = pd.DataFrame(
         np.random.randn(20, 2) / [50, 50] + [0.87, 0.05],
@@ -369,7 +319,43 @@ elif page == "◉ Deployment & Drift":
     )
     st.line_chart(chart_data)
 
-    if st.button("⚡ Trigger Emergency Auto-Retrain Pipeline"):
+    if st.button("⚡ Trigger Emergency Auto-Retrain Pipeline", key="btn_retrain"):
         st.info("Auto-Retraining pipeline dispatched to GPU cluster.")
 
-```
+
+# ---------------------------------------------------------
+# 3. MAIN ROUTER
+# ---------------------------------------------------------
+with st.sidebar:
+    st.markdown("### ✦ <span style='color:#6477ff;font-weight:800;font-size:22px;'>VisionForge AI</span>", unsafe_allow_html=True)
+    st.markdown("---")
+    
+    selected_page = st.radio(
+        "Modules",
+        [
+            "⌂ Home Dashboard",
+            "▤ Dataset Health Audit",
+            "▣ AutoML Training",
+            "🧪 Real-World Inspector",
+            "◉ Deployment & Drift"
+        ],
+        key="nav_radio"
+    )
+    
+    st.markdown("---")
+    st.caption("Active Pipeline")
+    st.markdown("**Bottle Defect Detection**")
+    st.progress(68)
+    st.caption("Phase: Model Training (68%)")
+
+# Page Routing Execution
+if selected_page == "⌂ Home Dashboard":
+    render_dashboard()
+elif selected_page == "▤ Dataset Health Audit":
+    render_dataset_audit()
+elif selected_page == "▣ AutoML Training":
+    render_automl()
+elif selected_page == "🧪 Real-World Inspector":
+    render_inspector()
+elif selected_page == "◉ Deployment & Drift":
+    render_deployment()
